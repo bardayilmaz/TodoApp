@@ -15,11 +15,8 @@ public class Todo {
     @Id
     @SequenceGenerator(name="todo_sequence", sequenceName = "todo_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "student_sequence")
-    @Column(name="id")
     private Long id;
-    @Column(name="description")
     private String description;
-    @Column(name="due_date")
     private LocalDate dueDate;
 
     //created at, updated at
