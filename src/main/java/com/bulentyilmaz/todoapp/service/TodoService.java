@@ -32,10 +32,10 @@ public class TodoService {
         return convertToResponse(todoRepository.findTodos(description, dueDate));
     }
 
-    public TodoResponse getTodoById(Long id) {
-        Optional<Todo> todo = todoRepository.findById(id);
+    public TodoResponse getTodoById(Long todoId) {
+        Optional<Todo> todo = todoRepository.findById(todoId);
         if(todo.isEmpty()) {
-            throw new TodoDoesNotExistException("Todo with id " + id + " does not exist.");
+            throw new TodoDoesNotExistException("Todo with id " + todoId + " does not exist.");
         }
         return TodoResponse.fromEntity(todo.get());
     }

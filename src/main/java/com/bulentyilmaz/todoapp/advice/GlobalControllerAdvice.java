@@ -42,7 +42,7 @@ public class GlobalControllerAdvice {
         if(AnnotationUtils.findAnnotation(e.getClass(), ResponseStatus.class) != null)
             throw e;
         ErrorModel error = ErrorModel.builder()
-                .statusCode(ErrorCode.unknown.getHttpCode())
+                .statusCode(ErrorCode.unknown.getHttpCode()) //500
                 .errorCode("Bad Request")
                 .message(e.getLocalizedMessage())
                 .build();
