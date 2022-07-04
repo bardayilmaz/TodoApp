@@ -31,9 +31,11 @@ public class User {
     @Column(name = "password_hash")
     private String passwordHash;
 
-    @OneToMany
-    private List<Todo> todos;
+    @Column(name= "role")
+    @Enumerated(EnumType.ORDINAL)
+    private Role role;
 
-
+//    @OneToMany
+//    private List<Todo> todos;
 
 }

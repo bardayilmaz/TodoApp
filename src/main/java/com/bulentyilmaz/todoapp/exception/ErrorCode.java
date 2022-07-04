@@ -14,8 +14,8 @@ public enum ErrorCode {
     password_mismatch(409),
     code_mismatch(409),
     already_submitted(409),
-    validation(422);
-
+    validation(422),
+    internal_server_error(500);
     private final int httpCode;
 
     ErrorCode(int httpCode) {

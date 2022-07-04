@@ -16,7 +16,7 @@ import java.util.Date;
 
 @Slf4j
 @Service
-public class JwtService {
+public class JwtService { // token işlemlerinin yapıldığı class.
 
     private final SecurityConfig securityConfig;
 

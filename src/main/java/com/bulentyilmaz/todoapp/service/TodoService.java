@@ -1,9 +1,10 @@
 package com.bulentyilmaz.todoapp.service;
 
+import com.bulentyilmaz.todoapp.entity.Role;
 import com.bulentyilmaz.todoapp.entity.Todo;
-import com.bulentyilmaz.todoapp.exception.ErrorCode;
 import com.bulentyilmaz.todoapp.exception.InvalidDueDateException;
 import com.bulentyilmaz.todoapp.exception.TodoDoesNotExistException;
+import com.bulentyilmaz.todoapp.exception.UnauthorizedException;
 import com.bulentyilmaz.todoapp.model.request.TodoRequest;
 import com.bulentyilmaz.todoapp.model.response.TodoResponse;
 import com.bulentyilmaz.todoapp.repository.TodoRepository;
@@ -22,18 +23,27 @@ import java.util.Optional;
 public class TodoService {
 
     private final TodoRepository todoRepository;
+    private final UserService userService;
 
     @Autowired
-    public TodoService(TodoRepository todoRepository) {
+    public TodoService(TodoRepository todoRepository, UserService userService) {
         this.todoRepository = todoRepository;
+        this.userService = userService;
     }
 
     public List<TodoResponse> getTodos(String description, LocalDate dueDate) {
-        return convertToResponse(todoRepository.findTodos(description, dueDate));
+        if(userService.getAuthenticatedUser().get().getRole() == Role.ADMIN) {
+            return convertToResponse(todoRepository.findTodos(description, dueDate));
+        }
+        return convertToResponse(todoRepository.findTodosByOwnerId(userService.getAuthenticatedUserId()));
     }
 
     public TodoResponse getTodoById(Long todoId) {
         Optional<Todo> todo = todoRepository.findById(todoId);
+        if(todo.isPresent() &&
+                !convertToResponse(todoRepository.findTodosByOwnerId(userService.getAuthenticatedUserId())).contains(todo.get())) {
+            throw new UnauthorizedException("You are unauthorized to view someone else's todo!");
+        }
         if(todo.isEmpty()) {
             throw new TodoDoesNotExistException("Todo with id " + todoId + " does not exist.");
         }
@@ -46,6 +56,7 @@ public class TodoService {
             throw new InvalidDueDateException("Given dueDate is not valid.");
         }
         Todo newTodo = fromRequest(new Todo(), todoRequest);
+        newTodo.setOwner(userService.getAuthenticatedUser().get());
         return TodoResponse.fromEntity(todoRepository.save(newTodo));
     }
 
@@ -55,6 +66,11 @@ public class TodoService {
             throw new TodoDoesNotExistException("Todo with id " + id + " does not exist.");
         }
         Optional<Todo> removed = todoRepository.findById(id);
+        long userId = userService.getAuthenticatedUserId();
+
+        if(removed.get().getOwner().getId() != userId) {
+            throw new UnauthorizedException("You can not delete someone else's todo!");
+        }
         todoRepository.deleteById(id);
         return TodoResponse.fromEntity(removed.get());
     }
@@ -69,10 +85,21 @@ public class TodoService {
         if(dueDate!=null && !isGivenDueDateValid(dueDate)) {
             throw new InvalidDueDateException("Given dueDate is not valid.");
         }
+        if(userService.getAuthenticatedUserId() != todo.getOwner().getId()) {
+            throw new UnauthorizedException("You can not update someone else's todo!");
+        }
         todo.setDescription(description);
         todo.setDueDate(dueDate);
         final Todo updatedTodo = todoRepository.save(todo);
         return ResponseEntity.ok(updatedTodo);
+    }
+
+    // Bu metod admin için, henüz kullanılabilir değil.
+    public List<TodoResponse> getTodosOf(Long userId) {
+        if(userService.getAuthenticatedUser().get().getRole() == Role.ADMIN) {
+            return convertToResponse(todoRepository.findTodosByOwnerId(userId));
+        }
+        throw new UnauthorizedException("Unauthorized");
     }
 
     private Todo fromRequest(Todo todo, TodoRequest todoRequest) {

@@ -1,5 +1,6 @@
 package com.bulentyilmaz.todoapp.service;
 
+import com.bulentyilmaz.todoapp.entity.Role;
 import com.bulentyilmaz.todoapp.entity.User;
 import com.bulentyilmaz.todoapp.exception.PasswordMismatchException;
 import com.bulentyilmaz.todoapp.exception.UserAlreadyExistsException;
@@ -14,8 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-
 @Service
 @Transactional
 @AllArgsConstructor
@@ -24,6 +23,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+
 
     public void register(RegisterRequest registerRequest) {
         User exists = userRepository.findByEmail(registerRequest.getEmail());
@@ -36,7 +36,7 @@ public class AuthService {
         user.setLastName(registerRequest.getLastName());
         user.setEmail(registerRequest.getEmail());
         user.setPasswordHash(passwordEncoder.encode(registerRequest.getPassword()));
-        user.setTodos(new ArrayList<>());
+        user.setRole(Role.USER);
         userRepository.save(user);
     }
 

@@ -19,6 +19,9 @@ public class Todo {
     private String description;
     private LocalDate dueDate;
 
+    @ManyToOne
+    @JoinColumn(name="user_id", nullable = false)
+    private User owner;
     //created at, updated at
 
     public Todo(Long id, String description) {

@@ -1,6 +1,5 @@
 package com.bulentyilmaz.todoapp.controller;
 
-import com.bulentyilmaz.todoapp.entity.Todo;
 import com.bulentyilmaz.todoapp.model.request.TodoRequest;
 import com.bulentyilmaz.todoapp.model.response.TodoResponse;
 import com.bulentyilmaz.todoapp.service.TodoService;
@@ -33,6 +32,11 @@ public class TodoController {
     @GetMapping(path="/{id}")
     public TodoResponse getTodoById(@PathVariable("id") Long id) {
         return todoService.getTodoById(id);
+    }
+
+    @GetMapping("/of/{userId}")
+    public List<TodoResponse> getTodosOf(@PathVariable("userId") Long userId) {
+        return todoService.getTodosOf(userId);
     }
 
     @PostMapping()
