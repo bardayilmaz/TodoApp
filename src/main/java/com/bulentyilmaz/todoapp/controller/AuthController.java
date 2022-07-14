@@ -1,6 +1,7 @@
 package com.bulentyilmaz.todoapp.controller;
 
 import com.bulentyilmaz.todoapp.model.request.LoginRequest;
+import com.bulentyilmaz.todoapp.model.request.PasswordRequest;
 import com.bulentyilmaz.todoapp.model.request.RegisterRequest;
 import com.bulentyilmaz.todoapp.model.response.AuthResponse;
 import com.bulentyilmaz.todoapp.service.AuthService;
@@ -33,5 +34,10 @@ public class AuthController {
     @PostMapping("/login")
     public AuthResponse login(@Valid @RequestBody LoginRequest request) {
         return authService.login(request);
+    }
+
+    @PutMapping("/me/pass") //auth
+    public void changePassword(@Valid @RequestBody PasswordRequest body) {
+        userService.changePassword(userService.getAuthenticatedUserId(), body);
     }
 }

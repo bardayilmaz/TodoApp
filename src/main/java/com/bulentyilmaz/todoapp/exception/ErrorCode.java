@@ -3,6 +3,7 @@ package com.bulentyilmaz.todoapp.exception;
 public enum ErrorCode {
 
     unknown(400),
+    password_mismatch(401),
     unauthorized(401),
     forbidden(403),
     account_not_verified(403),
@@ -11,7 +12,6 @@ public enum ErrorCode {
     already_onboarded(409),
     conflict(409),
     user_already_exists(409),
-    password_mismatch(409),
     code_mismatch(409),
     already_submitted(409),
     validation(422),

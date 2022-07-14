@@ -3,7 +3,9 @@ package com.bulentyilmaz.todoapp.controller;
 import com.bulentyilmaz.todoapp.entity.Role;
 import com.bulentyilmaz.todoapp.model.request.PasswordRequest;
 import com.bulentyilmaz.todoapp.model.request.UpdateUserRequest;
+import com.bulentyilmaz.todoapp.model.response.TodoResponse;
 import com.bulentyilmaz.todoapp.model.response.UserResponse;
+import com.bulentyilmaz.todoapp.service.TodoService;
 import com.bulentyilmaz.todoapp.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private TodoService todoService;
 
     @GetMapping
     public List<UserResponse> getUsers(@RequestParam(required = false) String firstName,
@@ -36,8 +39,8 @@ public class UserController {
         userService.updateUser(userService.getAuthenticatedUserId(), body);
     }
 
-    @PutMapping("/me/pass")
-    public void changePassword(@Valid @RequestBody PasswordRequest body) {
-        userService.changePassword(userService.getAuthenticatedUserId(), body);
+    @GetMapping("/{userId}/todo") // user/{userid}/todo/...
+    public List<TodoResponse> getTodosOf(@PathVariable("userId") Long userId) {
+        return todoService.getTodosOf(userId);
     }
 }

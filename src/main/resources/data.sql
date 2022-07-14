@@ -1,2 +1,0 @@
---insert into users(id, email, first_name, last_name, password_hash, role)
---values (1, 'admin@todo.com', 'Bulent', 'Yilmaz', '$2a$10$5k99tvpc.Vi6fua8d9GOyOA2iyIDqgR.HQa1hHn1pZ9ajvdWlt3Um', 0);

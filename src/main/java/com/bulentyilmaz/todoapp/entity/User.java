@@ -34,8 +34,4 @@ public class User {
     @Column(name= "role")
     @Enumerated(EnumType.ORDINAL)
     private Role role;
-
-//    @OneToMany
-//    private List<Todo> todos;
-
 }

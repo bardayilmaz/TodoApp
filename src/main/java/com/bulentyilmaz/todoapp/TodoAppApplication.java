@@ -17,18 +17,18 @@ public class TodoAppApplication {
 		SpringApplication.run(TodoAppApplication.class, args);
 	}
 
-	@Bean
-	CommandLineRunner run(UserRepository userRepository) {
-		return args ->{
-			User u = new User();
-			//u.setId(new Long(1));
-			u.setFirstName("Bulent");
-			u.setLastName("Yilmaz");
-			u.setEmail("admin@todo.com");
-			u.setPasswordHash("$2a$10$5k99tvpc.Vi6fua8d9GOyOA2iyIDqgR.HQa1hHn1pZ9ajvdWlt3Um");
-			u.setRole(Role.ADMIN);
-			userRepository.save(u);
-		};
-	}
+//	@Bean
+//	CommandLineRunner run(UserRepository userRepository) { // data sql
+//		return args ->{
+//			User u = new User();
+//			//u.setId(new Long(1));
+//			u.setFirstName("Bulent");
+//			u.setLastName("Yilmaz");
+//			u.setEmail("admin@todo.com");
+//			u.setPasswordHash("$2a$10$5k99tvpc.Vi6fua8d9GOyOA2iyIDqgR.HQa1hHn1pZ9ajvdWlt3Um");
+//			u.setRole(Role.ADMIN);
+//			userRepository.save(u);
+//		};
+//	}
 
 }

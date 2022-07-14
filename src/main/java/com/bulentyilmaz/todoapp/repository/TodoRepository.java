@@ -13,10 +13,10 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
 
     //@Query("select t from Todo t where (:description is null or t.description=:description) and (cast(:dueDate as date) is null or t.dueDate=:dueDate)")
     @Query(value = "select * from todo where" +
-            " (:description is null or description=:description) and (cast(:dueDate as date) is null or due_date=:dueDate)"
+            " (:description is null or description=:description) and (cast(:dueDate as date) is null or due_date=:dueDate)" +
+            "and (:userId is null or user_id=:userId)"
             , nativeQuery = true)
-    List<Todo> findTodos(String description, LocalDate dueDate);
-
+    List<Todo> findTodos(String description, LocalDate dueDate, Long userId);
 
     List<Todo> findTodosByOwnerId(Long ownerId);
 

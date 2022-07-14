@@ -44,7 +44,7 @@ public class UserService {
 
     public Optional<User> getAuthenticatedUser() {
         String principal = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(principal.equals("anonymousUser")) { // anon neden burda exception fırlatmıyor?
+        if(principal.equals("anonymousUser")) {
             return Optional.empty();
         }
         return userRepository.findById(Long.parseLong(principal));
@@ -62,7 +62,7 @@ public class UserService {
 
     public UserResponse getUser(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UnauthorizedException("Unauthorized")); //??? burda her zaman authuser'in çağrılacağı mı varsayılmış?
+                .orElseThrow(() -> new UnauthorizedException("Unauthorized"));
         return UserResponse.fromEntity(user);
     }
 

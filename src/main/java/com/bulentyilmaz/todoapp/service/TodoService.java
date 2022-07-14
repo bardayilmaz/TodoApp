@@ -33,15 +33,17 @@ public class TodoService {
 
     public List<TodoResponse> getTodos(String description, LocalDate dueDate) {
         if(userService.getAuthenticatedUser().get().getRole() == Role.ADMIN) {
-            return convertToResponse(todoRepository.findTodos(description, dueDate));
+            return convertToResponse(todoRepository.findTodos(description, dueDate, null));
         }
-        return convertToResponse(todoRepository.findTodosByOwnerId(userService.getAuthenticatedUserId()));
+        return convertToResponse(todoRepository.findTodos(description, dueDate, userService.getAuthenticatedUserId()));
     }
 
     public TodoResponse getTodoById(Long todoId) {
         Optional<Todo> todo = todoRepository.findById(todoId);
         if(todo.isPresent() &&
-                !convertToResponse(todoRepository.findTodosByOwnerId(userService.getAuthenticatedUserId())).contains(todo.get())) {
+                //!convertToResponse(todoRepository.findTodosByOwnerId(userService.getAuthenticatedUserId())).contains(todo.get()) &&
+                todo.get().getOwner().getId() != userService.getAuthenticatedUserId() &&
+                userService.getAuthenticatedUser().get().getRole() != Role.ADMIN) {
             throw new UnauthorizedException("You are unauthorized to view someone else's todo!");
         }
         if(todo.isEmpty()) {
@@ -75,7 +77,7 @@ public class TodoService {
         return TodoResponse.fromEntity(removed.get());
     }
 
-    public ResponseEntity<Todo> updateTodoById(Long id, TodoRequest todoRequest) { //transactional
+    public ResponseEntity<TodoResponse> updateTodoById(Long id, TodoRequest todoRequest) { //transactional
         String description = todoRequest.getDescription();
         LocalDate dueDate = todoRequest.getDueDate();
 
@@ -91,10 +93,9 @@ public class TodoService {
         todo.setDescription(description);
         todo.setDueDate(dueDate);
         final Todo updatedTodo = todoRepository.save(todo);
-        return ResponseEntity.ok(updatedTodo);
+        return ResponseEntity.ok(TodoResponse.fromEntity(updatedTodo));
     }
 
-    // Bu metod admin için, henüz kullanılabilir değil.
     public List<TodoResponse> getTodosOf(Long userId) {
         if(userService.getAuthenticatedUser().get().getRole() == Role.ADMIN) {
             return convertToResponse(todoRepository.findTodosByOwnerId(userId));
